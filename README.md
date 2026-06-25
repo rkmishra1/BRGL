@@ -27,7 +27,7 @@ BRGL models the dependence structure between predictors through a generalized gr
 For the linear model $y = X\beta + \epsilon$, $\epsilon \sim N(0, \sigma^2 I_n)$, BRGL places a graph Laplacian prior on $\beta$:
 
 $$
-\beta \mid \sigma^2 \sim N_p\left(0,\; \frac{\sigma^2}{r} \Lambda^{-1}\right)
+\beta \mid \sigma^2 \sim N_p(0,\; \frac{\sigma^2}{r} \Lambda^{-1})
 $$
 
 where $\Lambda$ is the generalized graph Laplacian with diagonal entries $\Lambda_{ii} = 1 + \lambda_{ii} + \sum_{j \neq i} |\lambda_{ij}|$ and off-diagonal $\Lambda_{ij} = \lambda_{ij}$.
@@ -35,7 +35,7 @@ where $\Lambda$ is the generalized graph Laplacian with diagonal entries $\Lambd
 The hyperprior on $\lambda$ is chosen to cancel the $|\Lambda|^{1/2}$ normalizing term, yielding the closed-form marginal:
 
 $$
-\pi(\beta \mid c, r, a, b, \sigma^2) \propto \exp\left[ -\frac{r}{2\sigma^2} \left( \sum_i \beta_i^2 + a\sigma \sum_i |\beta_i| + b\sigma \sum_{j < i} |\beta_i + c_{ij}\beta_j| \right) \right]
+\pi(\beta \mid c, r, a, b, \sigma^2) \propto \exp[ -\frac{r}{2\sigma^2} ( \sum_i \beta_i^2 + a\sigma \sum_i |\beta_i| + b\sigma \sum_{j < i} |\beta_i + c_{ij}\beta_j| ) ]
 $$
 
 This combines $\ell_2$ (Ridge), $\ell_1$ (Lasso), and pairwise OSCAR-like penalties in a single coherent prior.
@@ -49,29 +49,29 @@ Parameter augmentation (introducing $\eta_{ij} = |\lambda_{ij}|$, $c_{ij} = \tex
 **1. Update $\sigma^2$** — Inverse-Gamma:
 
 $$
-\sigma^2 \mid \lambda, D \sim \text{Inv-Gamma}\left( \frac{n}{2},\; \frac{y'(I_n - X(X'X + r\Lambda)^{-1}X')y}{2} \right)
+\sigma^2 \mid \lambda, D \sim \text{Inv-Gamma}( \frac{n}{2},\; \frac{y'(I_n - X(X'X + r\Lambda)^{-1}X')y}{2} )
 $$
 
 **2. Update $\beta$** — Multivariate Normal:
 
 $$
-\beta \mid \sigma^2, \lambda, D \sim N_p\left( (X'X + r\Lambda)^{-1}X'y,\; \sigma^2(X'X + r\Lambda)^{-1} \right)
+\beta \mid \sigma^2, \lambda, D \sim N_p( (X'X + r\Lambda)^{-1}X'y,\; \sigma^2(X'X + r\Lambda)^{-1} )
 $$
 
 **3. Update signs $c_{ij}$** — Bernoulli:
 
 $$
-P(c_{ij} = 1 \mid \beta, \sigma^2) = \left[ 1 + \exp\left( -\frac{rb(|\beta_i - \beta_j| - |\beta_i + \beta_j|)}{2\sigma} \right) \right]^{-1}
+P(c_{ij} = 1 \mid \beta, \sigma^2) = [ 1 + \exp( -\frac{rb(|\beta_i - \beta_j| - |\beta_i + \beta_j|)}{2\sigma} ) ]^{-1}
 $$
 
 **4. Update $\eta_{ii}$, $\eta_{ij}$** — Inverse Gaussian:
 
 $$
-\eta_{ii} \mid \beta, \sigma^2 \sim \text{Inv-Gaussian}\left( \frac{a\sigma}{\sqrt{r}|\beta_i|},\; a^2 \right)
+\eta_{ii} \mid \beta, \sigma^2 \sim \text{Inv-Gaussian}( \frac{a\sigma}{\sqrt{r}|\beta_i|},\; a^2 )
 $$
 
 $$
-\eta_{ij} \mid c, \beta, \sigma^2 \sim \text{Inv-Gaussian}\left( \frac{b\sigma}{\sqrt{r}|\beta_i + c_{ij}\beta_j|},\; b^2 \right)
+\eta_{ij} \mid c, \beta, \sigma^2 \sim \text{Inv-Gaussian}( \frac{b\sigma}{\sqrt{r}|\beta_i + c_{ij}\beta_j|},\; b^2 )
 $$
 
 **5. Set** $\lambda_{ii} = \eta_{ii}$, $\lambda_{ij} = c_{ij}\eta_{ij}$, reconstruct $\Lambda$.
@@ -79,11 +79,11 @@ $$
 **6. Update hyperparameters $r, a, b$** — Gamma / Exponential:
 
 $$
-r \mid \cdot \sim \text{Gamma}\left( \frac{p}{2} + h_r,\; \frac{\sum_i \beta_i^2}{2\sigma^2} + \frac{a\sum_i |\beta_i|}{2\sigma} + \frac{b\sum_{j<i} |\beta_i + c_{ij}\beta_j|}{2\sigma} + g_r \right)
+r \mid \cdot \sim \text{Gamma}( \frac{p}{2} + h_r,\; \frac{\sum_i \beta_i^2}{2\sigma^2} + \frac{a\sum_i |\beta_i|}{2\sigma} + \frac{b\sum_{j<i} |\beta_i + c_{ij}\beta_j|}{2\sigma} + g_r )
 $$
 
 $$
-a \mid \cdot \sim \text{Exp}\left( g_a + \frac{r\sum_i |\beta_i|}{2\sigma} \right), \qquad b \mid \cdot \sim \text{Exp}\left( g_b + \frac{r\sum_{j<i} |\beta_i + c_{ij}\beta_j|}{2\sigma} \right)
+a \mid \cdot \sim \text{Exp}( g_a + \frac{r\sum_i |\beta_i|}{2\sigma} ), \qquad b \mid \cdot \sim \text{Exp}( g_b + \frac{r\sum_{j<i} |\beta_i + c_{ij}\beta_j|}{2\sigma} )
 $$
 
 ---
