@@ -35,7 +35,7 @@ where $\Lambda$ is the generalized graph Laplacian with diagonal entries $\Lambd
 The hyperprior on $\lambda$ is chosen to cancel the $|\Lambda|^{1/2}$ normalizing term, yielding the closed-form marginal:
 
 $$
-\pi(\beta \mid c, r, a, b, \sigma^2) \propto \exp[ -\frac{r}{2\sigma^2} ( \sum_i \beta_i^2 + a\sigma \sum_i |\beta_i| + b\sigma \sum_{j < i} |\beta_i + c_{ij}\beta_j| ) ]
+\pi(\beta \mid c, r, a, b, \sigma^2) \propto \exp[ -\frac{r}{2\sigma^2} ( \sum_i \beta_i^2 + a\sigma \sum_i |\beta_i| + b\sigma \sum_{j \lt i} |\beta_i + c_{ij}\beta_j| ) ]
 $$
 
 This combines $\ell_2$ (Ridge), $\ell_1$ (Lasso), and pairwise OSCAR-like penalties in a single coherent prior.
@@ -79,11 +79,11 @@ $$
 **6. Update hyperparameters $r, a, b$** — Gamma / Exponential:
 
 $$
-r \mid \cdot \sim \text{Gamma}( \frac{p}{2} + h_r,\; \frac{\sum_i \beta_i^2}{2\sigma^2} + \frac{a\sum_i |\beta_i|}{2\sigma} + \frac{b\sum_{j<i} |\beta_i + c_{ij}\beta_j|}{2\sigma} + g_r )
+r \mid \cdot \sim \text{Gamma}( \frac{p}{2} + h_r,\; \frac{\sum_i \beta_i^2}{2\sigma^2} + \frac{a\sum_i |\beta_i|}{2\sigma} + \frac{b\sum_{j \lt i} |\beta_i + c_{ij}\beta_j|}{2\sigma} + g_r )
 $$
 
 $$
-a \mid \cdot \sim \text{Exp}( g_a + \frac{r\sum_i |\beta_i|}{2\sigma} ), \qquad b \mid \cdot \sim \text{Exp}( g_b + \frac{r\sum_{j<i} |\beta_i + c_{ij}\beta_j|}{2\sigma} )
+a \mid \cdot \sim \text{Exp}( g_a + \frac{r\sum_i |\beta_i|}{2\sigma} ), \qquad b \mid \cdot \sim \text{Exp}( g_b + \frac{r\sum_{j \lt i} |\beta_i + c_{ij}\beta_j|}{2\sigma} )
 $$
 
 ---
