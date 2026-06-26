@@ -44,7 +44,7 @@ This combines $\ell_2$ (Ridge), $\ell_1$ (Lasso), and pairwise OSCAR-like penalt
 
 ## Gibbs Sampler
 
-Parameter augmentation (introducing $\eta_{ij} = |\lambda_{ij}|, c_{ij} = \text{sign}(\lambda_{ij})$) yields closed-form full conditionals:
+Parameter augmentation (introducing $\eta_{ij} = |\lambda_{ij}|$, $c_{ij} = \text{sign}(\lambda_{ij})$) yields closed-form full conditionals:
 
 **1. Update $\sigma^2$** — Inverse-Gamma:
 
